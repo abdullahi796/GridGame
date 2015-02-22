@@ -5,22 +5,28 @@ Public Class Form1
     Dim hole(9, 9) As Tile
     Dim isRunning As Boolean = True
     Dim selectTile(3) As selectTile
-    Dim mouseImg As String = "CurveUp_Right.jpg"
+    Dim mouseImg As String = "UpRight.png"
     Dim countI As Integer
     Dim player As Ball
     Dim countC As Integer
     Dim key As String
     Dim reader As StreamReader = New StreamReader("selectTile.txt")
 
-    Private Sub Form1_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+    Private Sub Form1_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If e.KeyValue = Keys.Space Then
             player.key = "space"
         End If
-    End Sub
-
-    Private Sub Form1_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyUp
-        If e.KeyValue = Keys.Space Then
-            'player.key = ""
+        If e.KeyValue = Keys.A Then
+            key = "1"
+        End If
+        If e.KeyValue = Keys.S Then
+            key = "2"
+        End If
+        If e.KeyValue = Keys.D Then
+            key = "3"
+        End If
+        If e.KeyValue = Keys.F Then
+            key = "4"
         End If
     End Sub
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -34,11 +40,12 @@ Public Class Form1
 
         For i = 0 To 9
             For c = 0 To 9
-                If i = 1 And c = 7 Then
-                    grid(i, c) = New Tile(i, c, "Hole.png")
-                    grid(i, c).setup()
-                    Panel1.Controls.Add(grid(i, c).tile)
-                ElseIf c = 9 Then
+                'If i = 1 And c = 7 Then
+                '    grid(i, c) = New Tile(i, c, "Hole.png")
+                '    grid(i, c).setup()
+                '    Panel1.Controls.Add(grid(i, c).tile)
+                'Else
+                If c = 9 Then
                     grid(i, c) = New Tile(i, c, "Tile_1.png")
                     grid(i, c).setup()
                     Panel1.Controls.Add(grid(i, c).tile)
@@ -61,9 +68,18 @@ Public Class Form1
 
     'Mouse Position and Clicks
     Public Sub mousePos()
+        If key = "1" Then
+            mouseImg = "DownLeft.png"
+        ElseIf key = "2" Then
+            mouseImg = "DownRight.png"
+        ElseIf key = "3" Then
+            mouseImg = "UpLeft.png"
+        ElseIf key = "4" Then
+            mouseImg = "UpRight.png"
+        End If
         For i = 0 To 9
             For c = 0 To 9
-                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left And grid(i, c).img = "Hole.png" Then
+                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
                     grid(i, c).img = mouseImg
                 End If
             Next
@@ -91,8 +107,9 @@ Public Class Form1
         For i = 0 To 2
             selectTile(i).display()
         Next
-        grid(1, 2).img = "arrowDown.jpg"
+        grid(1, 2).img = "arrowDown.png"
         grid(7, 7).img = "Check.jpg"
+        Debug.Print(player.left)
         mousePos()
     End Sub
 
@@ -114,6 +131,8 @@ Public Class Form1
         Public down As String
         Public key As String
         Public last As String
+        Public lastTile As String
+        Public lastCount As Integer
 
         Public Sub New(ByVal tempX As Integer, ByVal tempY As Integer, ByVal tempImg As String)
             x = tempX * 60
@@ -140,29 +159,62 @@ Public Class Form1
             If key = "space" Then
                 ball.Top = y - 5
                 ball.Left = x + 3
-                If down = "arrowDown.jpg" And locY + 1 < 9 Then
-                    last = "arrowDown.jpg"
+                If down = "arrowDown.png" And locY + 1 < 9 Then
+                    last = "Down"
+                    lastTile = "Down"
                     y += 69
                     locY += 1
-                ElseIf right = "arrowRight.jpg" And locX + 1 < 9 Then
-                    last = "arrowRight.jpg"
-                    x += 60
-                    locX += 1
-                ElseIf down = "CurveUp_Right.jpg" And locY + 1 < 9 Then
-                    last = "arrowRight.jpg"
+                ElseIf down = "UpRight.png" And locY + 1 < 9 Then
+                    last = "Right"
+                    lastTile = "Left"
                     y += 60
                     locY += 1
-                ElseIf last = "arrowDown.jpg" And locY + 1 < 9 Then
-                    y += 60
-                    locY += 1
-                ElseIf last = "arrowRight.jpg" And locX + 1 < 9 Then
+                ElseIf down = "UpLeft.png" And locY - 1 < 0 Then
+                    last = "Left"
+                    lastTile = "Right"
+                    y -= 60
+                    locY -= 1
+                ElseIf left = "UpRight.png" And lastTile <> "Left" And locX - 1 > 0 Then
+                    last = "Up"
+                    x -= 60
+                    locX -= 1
+                ElseIf left = "DownRight.png" And lastTile <> "Left" And locX - 1 > 0 Then
+                    last = "Down"
+                    x -= 60
+                    locX -= 1
+                ElseIf right = "DownLeft.png" And locX + 1 < 9 Then
+                    last = "Down"
                     x += 60
                     locX += 1
-                End If
-                If current = "Check.jpg" Then
-                    key = ""
-                    Form1.restart()
-                End If
+                ElseIf right = "UpLeft.png" And locX + 1 < 9 Then
+                    last = "Up"
+                    x += 60
+                    locX += 1
+                ElseIf last = "UpRight.png" And locX + 1 < 9 Then
+                    last = "Up"
+                    x += 60
+                    locX += 1
+                ElseIf last = "DownLeft.png" And locX + 1 > 9 Then
+                    last = "Down"
+                    x += 60
+                    locX += 1
+                ElseIf last = "Up" And locY - 1 > 0 Then
+                    y -= 60
+                    locY -= 1
+                ElseIf last = "Down" And locY + 1 < 9 Then
+                    y += 60
+                    locY += 1
+                ElseIf last = "Right" And locX + 1 < 9 Then
+                    x += 60
+                    locX += 1
+                ElseIf last = "Left" And locX - 1 < 0 Then
+                    x -= 60
+                    locX -= 1
+            End If
+            If current = "Check.jpg" Then
+                key = ""
+                Form1.restart()
+            End If
             End If
         End Sub
     End Class
