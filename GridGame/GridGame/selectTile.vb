@@ -3,7 +3,7 @@ Public Class selectTile
     Public x As Integer
     Public y As Integer
     Public img As String
-    Public tile As PictureBox
+    Public tile As Label
     Public count As Integer
 
     Public Sub New(ByVal tempX As Integer, ByVal tempY As Integer, ByVal tempImg As String)
@@ -12,7 +12,7 @@ Public Class selectTile
         img = tempImg
     End Sub
     Public Sub setup()
-        tile = New Windows.Forms.PictureBox
+        tile = New Windows.Forms.Label
         tile.Visible = True
         tile.Left = x * 60
         tile.Top = y * 60

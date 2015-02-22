@@ -24,7 +24,8 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.tmrLoop = New System.Windows.Forms.Timer(Me.components)
-        Me.btnEditor = New System.Windows.Forms.Button()
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.tmrMove = New System.Windows.Forms.Timer(Me.components)
         Me.SuspendLayout()
         '
         'tmrLoop
@@ -32,30 +33,33 @@ Partial Class Form1
         Me.tmrLoop.Enabled = True
         Me.tmrLoop.Interval = 1
         '
-        'btnEditor
+        'Panel1
         '
-        Me.btnEditor.FlatStyle = System.Windows.Forms.FlatStyle.Popup
-        Me.btnEditor.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnEditor.ForeColor = System.Drawing.Color.DeepSkyBlue
-        Me.btnEditor.Location = New System.Drawing.Point(631, 532)
-        Me.btnEditor.Name = "btnEditor"
-        Me.btnEditor.Size = New System.Drawing.Size(81, 58)
-        Me.btnEditor.TabIndex = 0
-        Me.btnEditor.Text = "Level Editor"
-        Me.btnEditor.UseVisualStyleBackColor = True
+        Me.Panel1.Location = New System.Drawing.Point(13, 13)
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(200, 100)
+        Me.Panel1.TabIndex = 0
+        '
+        'tmrMove
+        '
+        Me.tmrMove.Enabled = True
+        Me.tmrMove.Interval = 10
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(724, 602)
-        Me.Controls.Add(Me.btnEditor)
+        Me.BackColor = System.Drawing.Color.Aquamarine
+        Me.ClientSize = New System.Drawing.Size(724, 648)
+        Me.Controls.Add(Me.Panel1)
         Me.Name = "Form1"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Form1"
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents tmrLoop As System.Windows.Forms.Timer
-    Friend WithEvents btnEditor As System.Windows.Forms.Button
+    Friend WithEvents Panel1 As System.Windows.Forms.Panel
+    Friend WithEvents tmrMove As System.Windows.Forms.Timer
 
 End Class

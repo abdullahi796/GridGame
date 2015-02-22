@@ -7,7 +7,8 @@ Public Class Form1
     Dim countI As Integer
     Dim countC As Integer
     Dim key As String
-    Dim picArray(11) As PictureBox
+    Dim picArray(12) As PictureBox
+    Dim picString(12) As String
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         For i = 0 To 9
             For c = 0 To 9
@@ -27,18 +28,32 @@ Public Class Form1
         picArray(9) = Me.PictureBox10
         picArray(10) = Me.PictureBox11
         picArray(11) = Me.PictureBox12
+        picArray(12) = Me.PictureBox13
+
+        picString(1) = "arrowDown.jpg"
+        picString(2) = "CurveUp_Right.jpg"
+        picString(3) = "CurveUp_Left.jpg"
+        picString(4) = "CurveLeft_Down.jpg"
+        picString(5) = "CurveRight_Down.jpg"
+        picString(6) = "CurveLeft_Up.jpg"
+        picString(7) = "CurveRight_Up.jpg"
+        picString(8) = "CurveDown_Right.jpg"
+        picString(9) = "CurveDown_Left.jpg"
+        picString(10) = "Blank.png"
+        picString(11) = "Check.jpg"
+        picString(12) = "Hover.png"
     End Sub
     Public Sub mousePos()
         For i = 0 To 9
             For c = 0 To 9
-                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left And grid(i, c).img = "Hover.png" Then
+                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
                     grid(i, c).img = mouseImg
                 End If
             Next
         Next
-        For i = 1 To 11
+        For i = 1 To 12
             If picArray(i).Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
-                mouseImg = picArray(i).Image.ToString
+                mouseImg = picString(i)
             End If
         Next
     End Sub
@@ -50,7 +65,10 @@ Public Class Form1
             Next
         Next
         mousePos()
+        ' Cursor = UseWaitCursor.GetTypeCode
     End Sub
+
+
 
     Public Class Tile
         Public x As Integer
@@ -76,4 +94,12 @@ Public Class Form1
             tile.Image = Image.FromFile(img)
         End Sub
     End Class
+
+    Private Sub TextBox1_TextChanged(sender As System.Object, e As System.EventArgs) Handles TextBox1.TextChanged
+
+    End Sub
+
+    Private Sub ToolStrip1_ItemClicked(sender As System.Object, e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
+
+    End Sub
 End Class

@@ -4,7 +4,7 @@ Public Class Form1
     Dim hole(9, 9) As Tile
     Dim isRunning As Boolean = True
     Dim selectTile(3) As selectTile
-    Dim mouseImg As String = "arrowRight.jpg"
+    Dim mouseImg As String = "CurveUp_Right.jpg"
     Dim countI As Integer
     Dim player As Ball
     Dim countC As Integer
@@ -23,21 +23,28 @@ Public Class Form1
         End If
     End Sub
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Panel1.Width = Me.Width
+        Panel1.Height = Me.Height
         player = New Ball(1, 1, "Ball_0.png")
         player.setup()
-        Me.Controls.Add(player.ball)
+        Panel1.Controls.Add(player.ball)
         Dim tileReader As String
+
 
         For i = 0 To 9
             For c = 0 To 9
                 If i = 1 And c = 7 Then
-                    grid(i, c) = New Tile(i, c, "Hover.png")
+                    grid(i, c) = New Tile(i, c, "Hole.png")
                     grid(i, c).setup()
-                    Me.Controls.Add(grid(i, c).tile)
+                    Panel1.Controls.Add(grid(i, c).tile)
+                ElseIf c = 9 Then
+                    grid(i, c) = New Tile(i, c, "Tile_1.png")
+                    grid(i, c).setup()
+                    Panel1.Controls.Add(grid(i, c).tile)
                 Else
-                    grid(i, c) = New Tile(i, c, "Blank.png")
+                    grid(i, c) = New Tile(i, c, "Tile_0.png")
                     grid(i, c).setup()
-                    Me.Controls.Add(grid(i, c).tile)
+                    Panel1.Controls.Add(grid(i, c).tile)
                 End If
             Next
         Next
@@ -46,7 +53,7 @@ Public Class Form1
             tileReader = reader.ReadLine
             selectTile(i) = New selectTile(11, i, tileReader)
             selectTile(i).setup()
-            Me.Controls.Add(selectTile(i).tile)
+            Panel1.Controls.Add(selectTile(i).tile)
         Next
     End Sub
 
@@ -55,25 +62,25 @@ Public Class Form1
     Public Sub mousePos()
         For i = 0 To 9
             For c = 0 To 9
-                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left And grid(i, c).img = "Hover.png" Then
+                If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left And grid(i, c).img = "Hole.png" Then
                     grid(i, c).img = mouseImg
                 End If
             Next
         Next
-        For i = 0 To 1
-            For c = 0 To 2
-                If selectTile(i).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
-                    mouseImg = selectTile(i).img
-                    countC = c
-                    countI = i
-                End If
-            Next
+        For i = 0 To 2
+            selectTile(i).tile.Visible = False
+            If selectTile(i).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
+                mouseImg = selectTile(i).img
+            End If
         Next
     End Sub
 
 
     'Main Loop
     Private Sub tmrLoop_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrLoop.Tick
+        Panel1.Width = Me.Width
+        Panel1.Height = Me.Height
+        Me.BackColor = Color.FromArgb(31, 218, 175)
         For i = 0 To 9
             For c = 0 To 9
                 grid(i, c).display()
@@ -86,18 +93,9 @@ Public Class Form1
         grid(1, 2).img = "arrowDown.jpg"
         grid(7, 7).img = "Check.jpg"
         mousePos()
-        player.move()
-        player.right = grid(player.locX + 1, player.locY).img
-        player.left = grid(player.locX - 1, player.locY).img
-        player.up = grid(player.locX, player.locY - 1).img
-        player.down = grid(player.locX, player.locY + 1).img
-        player.current = grid(player.locX, player.locY).img
-        Debug.Print(player.right)
     End Sub
 
     Public Sub restart()
-        player = New Ball(1, 1, "Ball_0.png")
-        grid(1, 7).img = "Hover.png"
     End Sub
 
     Public Class Ball
@@ -119,8 +117,8 @@ Public Class Form1
         Public Sub New(ByVal tempX As Integer, ByVal tempY As Integer, ByVal tempImg As String)
             x = tempX * 60
             y = tempY * 60
-            x += 5
-            y += 5
+            x += 370
+            y += 55
             img = tempImg
             locX = tempX
             locY = tempY
@@ -133,6 +131,8 @@ Public Class Form1
             ball.Top = y
             ball.Width = 48
             ball.Height = 48
+            ball.BackColor = Color.Transparent
+            ball.SizeMode = PictureBoxSizeMode.AutoSize
             'Debug.Print(x & " " & y)
         End Sub
         Public Sub move()
@@ -165,5 +165,14 @@ Public Class Form1
             End If
         End Sub
     End Class
+
+    Private Sub tmrMove_Tick(sender As System.Object, e As System.EventArgs) Handles tmrMove.Tick
+        player.move()
+        player.right = grid(player.locX + 1, player.locY).img
+        player.left = grid(player.locX - 1, player.locY).img
+        player.up = grid(player.locX, player.locY - 1).img
+        player.down = grid(player.locX, player.locY + 1).img
+        player.current = grid(player.locX, player.locY).img
+    End Sub
 End Class
 
