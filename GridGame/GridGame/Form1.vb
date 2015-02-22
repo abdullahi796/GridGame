@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Public Class Form1
+    'Comment
     Public grid(9, 9) As Tile
     Dim hole(9, 9) As Tile
     Dim isRunning As Boolean = True
