@@ -1,49 +1,73 @@
 ﻿Imports System.IO
 Public Class Form1
+    'Comment
     Public grid(9, 9) As Tile
     Dim hole(9, 9) As Tile
     Dim isRunning As Boolean = True
-    Dim mouseImg As String = "arrowRight.jpg"
+    Dim mouseImg As String = "UpRight.png"
     Dim countI As Integer
+    Dim player As Ball
     Dim countC As Integer
     Dim key As String
-    Dim picArray(12) As PictureBox
-    Dim picString(12) As String
-    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+    Private Sub Form1_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs)
+        If e.KeyValue = Keys.Space Then
+            player.key = "space"
+        End If
+        If e.KeyValue = Keys.A Then
+            key = "1"
+        End If
+        If e.KeyValue = Keys.S Then
+            key = "2"
+        End If
+        If e.KeyValue = Keys.D Then
+            key = "3"
+        End If
+        If e.KeyValue = Keys.F Then
+            key = "4"
+        End If
+    End Sub
+    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Panel1.Width = Me.Width
+        Panel1.Height = Me.Height
+        player = New Ball(1, 1, "Ball_0.png")
+        player.setup()
+        Panel1.Controls.Add(player.ball)
+        Dim tileReader As String
+
+
         For i = 0 To 9
             For c = 0 To 9
-                grid(i, c) = New Tile(i, c, "Blank.png")
-                grid(i, c).setup()
-                Me.Controls.Add(grid(i, c).tile)
+                'If i = 1 And c = 7 Then
+                '    grid(i, c) = New Tile(i, c, "Hole.png")
+                '    grid(i, c).setup()
+                '    Panel1.Controls.Add(grid(i, c).tile)
+                'Else
+                If c = 9 Then
+                    grid(i, c) = New Tile(i, c, "Tile_1.png")
+                    grid(i, c).setup()
+                    Panel1.Controls.Add(grid(i, c).tile)
+                Else
+                    grid(i, c) = New Tile(i, c, "Tile_0.png")
+                    grid(i, c).setup()
+                    Panel1.Controls.Add(grid(i, c).tile)
+                End If
             Next
         Next
-        picArray(1) = Me.PictureBox2
-        picArray(2) = Me.PictureBox3
-        picArray(3) = Me.PictureBox4
-        picArray(4) = Me.PictureBox5
-        picArray(5) = Me.PictureBox6
-        picArray(6) = Me.PictureBox7
-        picArray(7) = Me.PictureBox8
-        picArray(8) = Me.PictureBox9
-        picArray(9) = Me.PictureBox10
-        picArray(10) = Me.PictureBox11
-        picArray(11) = Me.PictureBox12
-        picArray(12) = Me.PictureBox13
-
-        picString(1) = "arrowDown.jpg"
-        picString(2) = "CurveUp_Right.jpg"
-        picString(3) = "CurveUp_Left.jpg"
-        picString(4) = "CurveLeft_Down.jpg"
-        picString(5) = "CurveRight_Down.jpg"
-        picString(6) = "CurveLeft_Up.jpg"
-        picString(7) = "CurveRight_Up.jpg"
-        picString(8) = "CurveDown_Right.jpg"
-        picString(9) = "CurveDown_Left.jpg"
-        picString(10) = "Blank.png"
-        picString(11) = "Check.jpg"
-        picString(12) = "Hover.png"
     End Sub
+
+
+    'Mouse Position and Clicks
     Public Sub mousePos()
+        If key = "1" Then
+            mouseImg = "DownLeft.png"
+        ElseIf key = "2" Then
+            mouseImg = "DownRight.png"
+        ElseIf key = "3" Then
+            mouseImg = "UpLeft.png"
+        ElseIf key = "4" Then
+            mouseImg = "UpRight.png"
+        End If
         For i = 0 To 9
             For c = 0 To 9
                 If grid(i, c).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
@@ -51,55 +75,139 @@ Public Class Form1
                 End If
             Next
         Next
-        For i = 1 To 12
-            If picArray(i).Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
-                mouseImg = picString(i)
-            End If
-        Next
     End Sub
 
-    Private Sub tmrLoop_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrLoop.Tick
+
+    'Main Loop
+    Private Sub tmrLoop_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Panel1.Width = Me.Width
+        Panel1.Height = Me.Height
+        Me.BackColor = Color.FromArgb(31, 218, 175)
         For i = 0 To 9
             For c = 0 To 9
                 grid(i, c).display()
             Next
         Next
+
+        grid(1, 2).img = "arrowDown.png"
+        grid(7, 7).img = "Check.jpg"
+        Debug.Print(player.left)
         mousePos()
-        ' Cursor = UseWaitCursor.GetTypeCode
     End Sub
 
+    Public Sub restart()
+    End Sub
 
-
-    Public Class Tile
+    Public Class Ball
         Public x As Integer
         Public y As Integer
         Public img As String
-        Public tile As PictureBox
+        Public ball As PictureBox
+        Public count As Integer
+        Public current As String
+        Public locX As Integer
+        Public locY As Integer
+        Public left As String
+        Public right As String
+        Public up As String
+        Public down As String
+        Public key As String
+        Public last As String
+        Public lastTile As String
+        Public lastCount As Integer
 
         Public Sub New(ByVal tempX As Integer, ByVal tempY As Integer, ByVal tempImg As String)
-            x = tempX
-            y = tempY
+            x = tempX * 60
+            y = tempY * 60
+            x += 370
+            y += 55
             img = tempImg
+            locX = tempX
+            locY = tempY
         End Sub
         Public Sub setup()
-            tile = New Windows.Forms.PictureBox
-            tile.Visible = True
-            tile.Image = Image.FromFile("Blank.png")
-            tile.Left = x * 60
-            tile.Top = y * 60
-            tile.Width = 60
-            tile.Height = 60
+            ball = New Windows.Forms.PictureBox
+            ball.Image = Image.FromFile(img)
+            ball.Visible = True
+            ball.Left = x
+            ball.Top = y
+            ball.Width = 48
+            ball.Height = 48
+            ball.BackColor = Color.Transparent
+            ball.SizeMode = PictureBoxSizeMode.AutoSize
+            'Debug.Print(x & " " & y)
         End Sub
-        Public Sub display()
-            tile.Image = Image.FromFile(img)
+        Public Sub move()
+            If key = "space" Then
+                ball.Top = y - 5
+                ball.Left = x + 3
+                If down = "arrowDown.png" And locY + 1 < 9 Then
+                    last = "Down"
+                    y += 69
+                    locY += 1
+                    lastTile = current
+                ElseIf down = "UpRight.png" And lastTile <> down And locY + 1 < 9 Then
+                    last = "Right"
+                    y += 60
+                    locY += 1
+                    lastTile = current
+                ElseIf down = "UpLeft.png" And lastTile <> down And locY + 1 < 9 Then
+                    last = "Left"
+                    y += 60
+                    locY += 1
+                    lastTile = current
+                ElseIf up = "DownRight.png" And lastTile <> up And locY - 1 < 9 Then
+                    last = "Right"
+                    y -= 60
+                    locY -= 1
+                    lastTile = current
+                ElseIf up = "DownLeft.png" And lastTile <> up And locY - 1 < 9 Then
+                    last = "Left"
+                    y -= 60
+                    locY -= 1
+                    lastTile = current
+                ElseIf left = "UpRight.png" And lastTile <> left And locX - 1 > 0 Then
+                    last = "Up"
+                    x -= 60
+                    locX -= 1
+                    lastTile = current
+                ElseIf left = "DownRight.png" And lastTile <> left And locX - 1 > 0 Then
+                    last = "Down"
+                    x -= 60
+                    locX -= 1
+                    lastTile = current
+                ElseIf right = "DownLeft.png" And lastTile <> right And locX + 1 < 9 Then
+                    last = "Down"
+                    x += 60
+                    locX += 1
+                    lastTile = current
+                ElseIf right = "UpLeft.png" And lastTile <> right And locX + 1 < 9 Then
+                    last = "Up"
+                    x += 60
+                    locX += 1
+                    lastTile = current
+                ElseIf last = "Up" And locY - 1 > 0 Then
+                    y -= 60
+                    locY -= 1
+                    lastTile = current
+                ElseIf last = "Down" And locY + 1 < 9 Then
+                    y += 60
+                    locY += 1
+                    lastTile = current
+                ElseIf last = "Right" And locX + 1 < 9 Then
+                    x += 60
+                    locX += 1
+                    lastTile = current
+                ElseIf last = "Left" And locX - 1 > 0 Then
+                    x -= 60
+                    locX -= 1
+                    lastTile = current
+                End If
+                If current = "Check.jpg" Then
+                    key = ""
+                    Form1.restart()
+                End If
+            End If
         End Sub
     End Class
-
-    Private Sub TextBox1_TextChanged(sender As System.Object, e As System.EventArgs) Handles TextBox1.TextChanged
-
-    End Sub
-
-    Private Sub ToolStrip1_ItemClicked(sender As System.Object, e As System.Windows.Forms.ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
-
-    End Sub
 End Class

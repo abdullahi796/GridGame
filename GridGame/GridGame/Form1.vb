@@ -11,10 +11,17 @@ Public Class Form1
     Dim countC As Integer
     Dim key As String
     Dim reader As StreamReader = New StreamReader("selectTile.txt")
+    Dim pic1 As Boolean = False
+    Dim pic2 As Boolean = False
+    Dim pic3 As Boolean = False
 
     Private Sub Form1_KeyPress(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If e.KeyValue = Keys.Space Then
-            player.key = "space"
+            If player.key = "space" Then
+                player.key = ""
+            Else
+                player.key = "space"
+            End If
         End If
         If e.KeyValue = Keys.A Then
             key = "1"
@@ -32,6 +39,8 @@ Public Class Form1
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Panel1.Width = Me.Width
         Panel1.Height = Me.Height
+        Panel1.Left = 0
+        Panel1.Top = 0
         player = New Ball(1, 1, "Ball_0.png")
         player.setup()
         Panel1.Controls.Add(player.ball)
@@ -153,68 +162,78 @@ Public Class Form1
             ball.Height = 48
             ball.BackColor = Color.Transparent
             ball.SizeMode = PictureBoxSizeMode.AutoSize
-            'Debug.Print(x & " " & y)
+            Debug.Print(lastTile)
         End Sub
         Public Sub move()
             If key = "space" Then
                 ball.Top = y - 5
                 ball.Left = x + 3
                 If down = "arrowDown.png" And locY + 1 < 9 Then
+                    lastTile = "Up"
                     last = "Down"
-                    lastTile = "Down"
                     y += 69
                     locY += 1
-                ElseIf down = "UpRight.png" And locY + 1 < 9 Then
+                ElseIf down = "UpRight.png" And lastTile <> "Down" And locY + 1 < 9 Then
+                    lastTile = "Up"
                     last = "Right"
-                    lastTile = "Left"
                     y += 60
                     locY += 1
-                ElseIf down = "UpLeft.png" And locY - 1 < 0 Then
+                ElseIf down = "UpLeft.png" And lastTile <> "Down" And locY + 1 < 9 Then
+                    lastTile = "Up"
                     last = "Left"
-                    lastTile = "Right"
+                    y += 60
+                    locY += 1
+                ElseIf up = "DownRight.png" And lastTile <> "Up" And locY - 1 < 9 Then
+                    last = "Right"
+                    lastTile = "Down"
+                    y -= 60
+                    locY -= 1
+                ElseIf up = "DownLeft.png" And lastTile <> "Up" And locY - 1 < 9 Then
+                    last = "Left"
+                    lastTile = "Down"
                     y -= 60
                     locY -= 1
                 ElseIf left = "UpRight.png" And lastTile <> "Left" And locX - 1 > 0 Then
                     last = "Up"
+                    lastTile = "Right"
                     x -= 60
                     locX -= 1
                 ElseIf left = "DownRight.png" And lastTile <> "Left" And locX - 1 > 0 Then
                     last = "Down"
+                    lastTile = "Right"
                     x -= 60
                     locX -= 1
-                ElseIf right = "DownLeft.png" And locX + 1 < 9 Then
+                ElseIf right = "DownLeft.png" And lastTile <> "Right" And locX + 1 < 9 Then
                     last = "Down"
+                    lastTile = "Left"
                     x += 60
                     locX += 1
-                ElseIf right = "UpLeft.png" And locX + 1 < 9 Then
+                ElseIf right = "UpLeft.png" And lastTile <> "Right" And locX + 1 < 9 Then
                     last = "Up"
-                    x += 60
-                    locX += 1
-                ElseIf last = "UpRight.png" And locX + 1 < 9 Then
-                    last = "Up"
-                    x += 60
-                    locX += 1
-                ElseIf last = "DownLeft.png" And locX + 1 > 9 Then
-                    last = "Down"
+                    lastTile = "Left"
                     x += 60
                     locX += 1
                 ElseIf last = "Up" And locY - 1 > 0 Then
+                    lastTile = "Down"
                     y -= 60
                     locY -= 1
                 ElseIf last = "Down" And locY + 1 < 9 Then
+                    lastTile = "Up"
                     y += 60
                     locY += 1
                 ElseIf last = "Right" And locX + 1 < 9 Then
+                    lastTile = "Left"
                     x += 60
                     locX += 1
-                ElseIf last = "Left" And locX - 1 < 0 Then
+                ElseIf last = "Left" And locX - 1 > 0 Then
+                    lastTile = "Right"
                     x -= 60
                     locX -= 1
-            End If
-            If current = "Check.jpg" Then
-                key = ""
-                Form1.restart()
-            End If
+                End If
+                If current = "Check.jpg" Then
+                    key = ""
+                    Form1.restart()
+                End If
             End If
         End Sub
     End Class
@@ -226,6 +245,57 @@ Public Class Form1
         player.up = grid(player.locX, player.locY - 1).img
         player.down = grid(player.locX, player.locY + 1).img
         player.current = grid(player.locX, player.locY).img
+    End Sub
+
+    Private Sub tmrUI_Tick(sender As System.Object, e As System.EventArgs) Handles tmrUI.Tick
+        If Label1.Bounds.Contains(PointToClient(MousePosition)) Then
+            showUI("Show")
+        Else
+            showUI("Hide")
+        End If
+        If Label2.Left < 15 Then
+            Label2.Visible = False
+        End If
+        If Label3.Left < 15 Then
+            Label3.Visible = False
+        End If
+    End Sub
+
+    Public Sub showUI(ByVal value As String)
+        If value = "Hide" Then
+            If pic2 = True Then
+                If Label2.Left > 12 Then
+                    Label2.Left -= 20
+                Else
+                    pic2 = False
+                End If
+            ElseIf pic3 = True Then
+                If Label3.Left > 12 Then
+                    Label3.Left -= 20
+                Else
+                    pic3 = False
+                End If
+            End If
+        ElseIf value = "Show" Then
+            If pic2 = False Then
+                If Label2.Left < 50 Then
+                    Label2.Visible = True
+                    Label2.Left += 20
+                Else
+                    pic2 = True
+                End If
+            ElseIf pic3 = False Then
+                If Label3.Left < 50 Then
+                    Label3.Visible = True
+                    Label3.Left += 20
+                Else
+                    pic3 = True
+                End If
+            End If
+        End If
+    End Sub
+    Private Sub Label1_Click(sender As System.Object, e As System.EventArgs) Handles Label1.Click
+
     End Sub
 End Class
 
