@@ -65,7 +65,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>8922547D6071234B919E021E18AAB2F4E4636CAC</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>74E4446AFC89FEF741F0929AB8E95021E17F7728</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>GridGame_TemporaryKey.pfx</ManifestKeyFile>

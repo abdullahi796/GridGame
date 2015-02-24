@@ -10,7 +10,6 @@ Public Class Form1
     Dim player As Ball
     Dim countC As Integer
     Dim key As String
-    Dim reader As StreamReader = New StreamReader("selectTile.txt")
     Dim pic1 As Boolean = False
     Dim pic2 As Boolean = False
     Dim pic3 As Boolean = False
@@ -66,12 +65,12 @@ Public Class Form1
             Next
         Next
 
-        For i = 0 To 4
-            tileReader = reader.ReadLine
-            selectTile(i) = New selectTile(11, i, tileReader)
-            selectTile(i).setup()
-            Panel1.Controls.Add(selectTile(i).tile)
-        Next
+        'For i = 0 To 4
+        '    tileReader = reader.ReadLine
+        '    selectTile(i) = New selectTile(11, i, tileReader)
+        '    selectTile(i).setup()
+        '    Panel1.Controls.Add(selectTile(i).tile)
+        'Next
     End Sub
 
 
@@ -93,12 +92,12 @@ Public Class Form1
                 End If
             Next
         Next
-        For i = 0 To 2
-            selectTile(i).tile.Visible = False
-            If selectTile(i).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
-                mouseImg = selectTile(i).img
-            End If
-        Next
+        'For i = 0 To 2
+        '    selectTile(i).tile.Visible = False
+        '    If selectTile(i).tile.Bounds.Contains(PointToClient(MousePosition)) And MouseButtons = Windows.Forms.MouseButtons.Left Then
+        '        mouseImg = selectTile(i).img
+        '    End If
+        'Next
     End Sub
 
 
