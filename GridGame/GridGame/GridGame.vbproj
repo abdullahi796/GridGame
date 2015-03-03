@@ -65,10 +65,10 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>74E4446AFC89FEF741F0929AB8E95021E17F7728</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>AA61C7DFA4EE2C837E5DA92F625468BC09156619</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>GridGame_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>GridGame_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -137,6 +137,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GridGame_1_TemporaryKey.pfx" />
     <None Include="GridGame_TemporaryKey.pfx" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
